@@ -11,7 +11,7 @@ from .graphql_client import GraphQLClient
 
 mcp = FastMCP(
     "Check Point WAF",
-    description="MCP server for Check Point CloudGuard WAF management via GraphQL API",
+    description="MCP server for Check Point WAF management via GraphQL API",
 )
 
 # Lazy-init globals

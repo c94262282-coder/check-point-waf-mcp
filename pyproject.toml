@@ -5,14 +5,14 @@ build-backend = "hatchling.build"
 [project]
 name = "checkpoint-waf-mcp"
 version = "0.1.0"
-description = "MCP server for Check Point CloudGuard WAF management"
+description = "MCP server for Check Point WAF management"
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.11"
 authors = [
     { name = "Check Point Software Technologies" },
 ]
-keywords = ["mcp", "checkpoint", "waf", "cloudguard", "graphql"]
+keywords = ["mcp", "checkpoint", "waf", "graphql"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: System Administrators",
