@@ -125,3 +125,6 @@ For more information about the Check Point WAF API, see the [Management API Refe
 ## License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+=======
+# check-point-waf-mcp
+>>>>>>> dc5633e3331693c183a1126be947ba898dca64ca
