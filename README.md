@@ -1,10 +1,10 @@
-# Check Point CloudGuard WAF MCP Server
+# Check Point WAF MCP Server
 
 <!-- Badges placeholder -->
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 
-An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that provides tools for managing Check Point CloudGuard WAF through its GraphQL API.
+An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that provides tools for managing Check Point WAF through its GraphQL API.
 
 ## Features
 
@@ -32,7 +32,7 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that 
 - **discardChanges** - Discard all pending changes
 
 ### Utility
-- **getGraphQLSchema** - Introspect the CloudGuard WAF GraphQL schema
+- **getGraphQLSchema** - Introspect the Check Point WAF GraphQL schema
 
 ## Prerequisites
 
@@ -120,7 +120,7 @@ Once connected, you can ask things like:
 
 ## API Reference
 
-For more information about the Check Point CloudGuard WAF API, see the [Management API Reference](https://waf-doc.inext.checkpoint.com/references/management-api).
+For more information about the Check Point WAF API, see the [Management API Reference](https://waf-doc.inext.checkpoint.com/references/management-api).
 
 ## License
 
