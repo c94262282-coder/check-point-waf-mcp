@@ -121,10 +121,3 @@ Once connected, you can ask things like:
 ## API Reference
 
 For more information about the Check Point WAF API, see the [Management API Reference](https://waf-doc.inext.checkpoint.com/references/management-api).
-
-## License
-
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
-=======
-# check-point-waf-mcp
->>>>>>> dc5633e3331693c183a1126be947ba898dca64ca
