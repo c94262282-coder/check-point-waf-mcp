@@ -1,18 +1,16 @@
 """Authentication for Check Point Infinity Portal."""
 
 import time
+
 import httpx
 
-# Regional auth endpoints
-REGION_ENDPOINTS = {
-    "us": "https://cloudinfra-gw.portal.checkpoint.com",
-    "eu": "https://cloudinfra-gw-eu.portal.checkpoint.com",
-    "ap": "https://cloudinfra-gw-ap.portal.checkpoint.com",
-    "au": "https://cloudinfra-gw-au.portal.checkpoint.com",
-    "in": "https://cloudinfra-gw-in.portal.checkpoint.com",
-}
+# Region is still validated for config sanity, but this tenant flow uses the
+# global Infinity Portal hostname for both auth and GraphQL.
+VALID_REGIONS = {"us", "eu", "ap", "au", "in"}
 
-AUTH_PATH = "/auth/external"
+# Auth uses the global Infinity Portal endpoint for external users.
+AUTH_BASE_URL = "https://cloudinfra-gw.portal.checkpoint.com"
+AUTH_PATH = "/auth/external/user"
 
 
 class AuthClient:
@@ -21,9 +19,10 @@ class AuthClient:
     def __init__(self, client_id: str, access_key: str, region: str = "us"):
         self.client_id = client_id
         self.access_key = access_key
-        if region.lower() not in REGION_ENDPOINTS:
-            raise ValueError(f"Unknown region '{region}'. Valid: {list(REGION_ENDPOINTS.keys())}")
-        self.base_url = REGION_ENDPOINTS[region.lower()]
+        if region.lower() not in VALID_REGIONS:
+            raise ValueError(f"Unknown region '{region}'. Valid: {sorted(VALID_REGIONS)}")
+        self.base_url = AUTH_BASE_URL
+        self.auth_url = f"{AUTH_BASE_URL}{AUTH_PATH}"
         self._token: str | None = None
         self._token_expiry: float = 0
 
@@ -38,7 +37,7 @@ class AuthClient:
         """Acquire a new JWT token from Infinity Portal."""
         async with httpx.AsyncClient() as client:
             resp = await client.post(
-                f"{self.base_url}{AUTH_PATH}",
+                self.auth_url,
                 json={
                     "clientId": self.client_id,
                     "accessKey": self.access_key,
@@ -47,7 +46,13 @@ class AuthClient:
                 timeout=30,
             )
             resp.raise_for_status()
-            data = resp.json()
+            try:
+                data = resp.json()
+            except ValueError as exc:
+                raise RuntimeError(
+                    "Authentication endpoint returned a non-JSON response. "
+                    "Check the configured region and API credentials."
+                ) from exc
 
         token = data.get("data", {}).get("token")
         if not token:

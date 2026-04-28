@@ -11,7 +11,7 @@ from .graphql_client import GraphQLClient
 
 mcp = FastMCP(
     "Check Point WAF",
-    description="MCP server for Check Point WAF management via GraphQL API",
+    instructions="MCP server for Check Point WAF management via GraphQL API",
 )
 
 # Lazy-init globals
@@ -71,9 +71,8 @@ async def list_assets(
                 id
                 name
                 assetType
-                status
+                objectStatus
                 state
-                mainAttributes
                 family
                 category
                 class
@@ -101,18 +100,17 @@ async def get_asset(asset_id: str) -> str:
             id
             name
             assetType
-            status
+            objectStatus
             state
-            mainAttributes
             family
             category
             class
             kind
             group
-            tags { id name }
+            tags { id key value }
             profiles { id name }
             practices { 
-                practiceId
+                id
                 mainMode
                 subPracticeModes { mode subPractice }
             }
@@ -137,21 +135,19 @@ async def get_web_application_asset(asset_id: str) -> str:
             id
             name
             assetType
-            status
+            objectStatus
             state
-            stage
             upstreamURL
-            deployCertificateManually
             URLs { id URL }
             proxySetting { id key value }
-            sourceIdentifiers { id sourceIdentifier values { id value } }
+            sourceIdentifiers { id sourceIdentifier values { id IdentifierValue } }
             practices {
-                practiceId
+                id
                 mainMode
                 subPracticeModes { mode subPractice }
             }
             profiles { id name }
-            tags { id name }
+            tags { id key value }
         }
     }
     """
@@ -239,7 +235,7 @@ async def get_asset_statistics(asset_id: str) -> str:
         }
     }
     """
-    data = await gql.execute(query, {"id": asset_id})
+    data = await gql.execute(query, {"id": asset_id}, use_v2=True)
     return _fmt(data.get("getAssetStatistics", {}))
 
 
@@ -323,7 +319,7 @@ async def list_practices(
     if match_search:
         args.append(f'matchSearch: "{match_search}"')
     if practice_type:
-        args.append(f"practiceType: {practice_type}")
+        args.append(f'practiceType: "{practice_type}"')
     if include_private:
         args.append("includePrivatePractices: true")
     arg_str = f"({', '.join(args)})" if args else ""
@@ -370,25 +366,11 @@ async def get_web_application_practice(practice_id: str) -> str:
             }
             WebAttacks {
                 minimumSeverity
-                advancedSetting {
-                    CSRFProtection
-                    openRedirect
-                    errorDisclosure
-                    bodySize
-                    urlSize
-                    headerSize
-                    maxObjectDepth
-                    illegalHttpMethods
-                }
-            }
-            WebBot {
-                injectURIs
-                validURIs
             }
         }
     }
     """
-    data = await gql.execute(query, {"id": practice_id})
+    data = await gql.execute(query, {"id": practice_id}, use_v2=True)
     return _fmt(data.get("getWebApplicationPractice", {}))
 
 
@@ -407,7 +389,7 @@ async def get_overview() -> str:
         }
     }
     """
-    data = await gql.execute(query)
+    data = await gql.execute(query, use_v2=True)
     return _fmt(data.get("getOverview", {}))
 
 
@@ -525,7 +507,7 @@ async def new_web_application_asset(
         }
     }
     """
-    data = await gql.execute(mutation, variables)
+    data = await gql.execute(mutation, variables, use_v2=True)
     return _fmt(data.get("newWebApplicationAsset", {}))
 
 
@@ -611,7 +593,7 @@ async def new_web_application_practice(
         }
     }
     """
-    data = await gql.execute(mutation, variables)
+    data = await gql.execute(mutation, variables, use_v2=True)
     return _fmt(data.get("newWebApplicationPractice", {}))
 
 
